@@ -9,7 +9,7 @@ use windows::Win32::UI::WindowsAndMessaging::{
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // 1. The folders from your PS1 script
+    // - define which folder(s) to use
     let folders = vec![
         r"path\to\your\wallpapers",
 //      r"path\to\your\wallpapers",
@@ -18,10 +18,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut rng = rand::thread_rng();
 
-    // 2. Pick a random folder
+    // - Pick a random folder
     let selected_folder = folders.choose(&mut rng).expect("Folder list is empty");
 
-    // 3. Get all files and pick a random one
+    // - Get all files and pick a random one
     let entries = fs::read_dir(selected_folder)?
         .filter_map(|res| res.ok())
         .map(|e| e.path())
@@ -30,13 +30,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let selected_wallpaper = entries.choose(&mut rng).ok_or("No files found in folder")?;
 
-    // 4. Convert the path to the "Wide String" format user32.dll expects
+    // - Convert the path to the "Wide String" format user32.dll expects
     let path_wide: Vec<u16> = OsStr::new(selected_wallpaper.as_os_str())
         .encode_wide()
         .chain(std::iter::once(0)) // Null terminator
         .collect();
 
-    // 5. The "Spiteful" call to user32.dll
+    //  - set wallpaper
     unsafe {
         SystemParametersInfoW(
             SPI_SETDESKWALLPAPER,
