@@ -12,8 +12,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // - define which folder(s) to use
     let folders = vec![
         r"path\to\your\wallpapers",
-//      r"path\to\your\wallpapers",
-//      r"path\to\your\wallpapers",
+//      r"path\to\your\wallpapers", *add your own paths if you want multiple folders being used~*
+//      r"path\to\your\wallpapers", *add your own paths if you want multiple folders being used~* 
     ];
 
     let mut rng = rand::thread_rng();
