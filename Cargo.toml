@@ -1,8 +1,11 @@
 [package]
 name = "Wallpaper_Picker"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
 rand = "0.8"
-windows = { version = "0.58", features = ["Win32_UI_WindowsAndMessaging", "Win32_Foundation"]}
+notify-rust = "4.11"
+#the 'gio' crate handles the GNOME settings database
+gio = "0.19"
+glib = "0.19"
