@@ -20,7 +20,7 @@ let selected_folder = folders.choose(&mut rng).ok_or("folder list is empty")?;
 
 //collect files
 let entries = fs::read_dir(selected_folder)?
-    .filter_map(|res| re.ok())
+    .filter_map(|res| res.ok())
     .map(|e| e.path())
     .filter(|path| path.is_file())
     .collect::<Vec<PathBuf>>();
@@ -33,7 +33,7 @@ let entries = fs::read_dir(selected_folder)?
 let selected_wallpaper = entries.choose(&mut rng).unwrap();
 let wallpaper_path = selected_wallpaper.to_str().ok_or("Invalid path")?;
 
-let wallpaper_uri = format!("file//{}", wallpaper_path);
+let wallpaper_uri = format!("file://{}", wallpaper_path);
 
 //set wallpaper via gsettings
 let settings = Settings::new("org.gnome.desktop.background");
@@ -56,5 +56,5 @@ Notification::new()
     .timeout(5000)
     .show()?;
 
-ok(())
+Ok(())
 }
