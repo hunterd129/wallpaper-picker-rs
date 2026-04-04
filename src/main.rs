@@ -8,35 +8,42 @@ use windows::Win32::UI::WindowsAndMessaging::{
     SystemParametersInfoW, SPI_SETDESKWALLPAPER, SPIF_UPDATEINIFILE,
 };
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // - define which folder(s) to use
-    let folders = vec![
-        r"path\to\your\wallpapers",
-//      r"path\to\your\wallpapers", *add your own paths if you want multiple folders being used~*
-//      r"path\to\your\wallpapers", *add your own paths if you want multiple folders being used~* 
-    ];
+use notify_rust::Notification;
 
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    //Define the parent directory
+    let root_path = r"C:\Users\hunte\Pictures\Wallpapers";
     let mut rng = rand::thread_rng();
 
-    // - Pick a random folder
-    let selected_folder = folders.choose(&mut rng).expect("Folder list is empty");
+   //Find all sub-directories within the parent
+   let folders: Vec<PathBuf> = fs::read_dir(root_path)?
+       .filter_map(|res| res.ok())
+       .map(|e| e.path())
+       .filter(|path| path.is_dir()) //Only include folders
+       .collect();
 
-    // - Get all files and pick a random one
-    let entries = fs::read_dir(selected_folder)?
+    if folders.is_empty() {
+        return Err("No subdirectories found in root directory".into());
+    }
+
+    //Pick a random folder from the dynamic list
+    let selected_folder = folders.choose(&mut rng).unwrap();
+
+    //Get all files in selected folder
+    let entries : Vec<PathBuf> = fs::read_dir(selected_folder)?
         .filter_map(|res| res.ok())
         .map(|e| e.path())
         .filter(|path| path.is_file())
-        .collect::<Vec<PathBuf>>();
+        .collect();
 
     let selected_wallpaper = entries.choose(&mut rng).ok_or("No files found in folder")?;
 
-    // - Convert the path to the "Wide String" format user32.dll expects
+    //Convert path and set wallpaper
     let path_wide: Vec<u16> = OsStr::new(selected_wallpaper.as_os_str())
         .encode_wide()
-        .chain(std::iter::once(0)) // Null terminator
+        .chain(std::iter::once(0))
         .collect();
 
-    //  - set wallpaper
     unsafe {
         SystemParametersInfoW(
             SPI_SETDESKWALLPAPER,
@@ -46,6 +53,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?;
     }
 
-    println!("Success! Wallpaper set to: {:?}", selected_wallpaper);
+    //Send notification
+    let folder_name = selected_folder.file_name().unwrap_or_default().to_string_lossy();
+    let file_name = selected_wallpaper.file_name().unwrap_or_default().to_string_lossy();
+
+    Notification::new()
+        .summary("Wallpaper Updated")
+        .body(&format!("Theme: {}\nFile: {}", folder_name, file_name))
+        .appname("Wallpaper Picker")
+        .icon("image-png")
+        .show()?;
+
     Ok(())
 }
+    
