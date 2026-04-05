@@ -6,5 +6,5 @@ pacman -S rust
 # build
 cargo run
 
-#automation
+# automation
 refer to systemd-wallpaper-swap.service repo
