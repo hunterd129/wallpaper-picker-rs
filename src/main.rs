@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let history_path = PathBuf::from(&home).join(".wallpaper_history.toml");
     let mut rng = rand::thread_rng();
 
-    // 1. Pick a GENRE first (Equal 1/N chance for every folder)
+    // 1. Pick a GENRE first
     let genres: Vec<PathBuf> = fs::read_dir(&root_path)?
         .filter_map(|res| res.ok())
         .map(|e| e.path())
@@ -31,7 +31,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let selected_genre = genres.choose(&mut rng).unwrap();
 
-    // 2. Use WalkDir ONLY on the selected genre to find all images inside it
+    // 2. Use WalkDir ONLY on the selected genre
     let entries: Vec<PathBuf> = WalkDir::new(selected_genre)
         .into_iter()
         .filter_map(|e| e.ok())
