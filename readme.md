@@ -8,3 +8,5 @@ cargo run
 
 # automation
 refer to systemd-wallpaper-swap.service repo
+
+current version is V2.1
