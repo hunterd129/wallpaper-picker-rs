@@ -15,7 +15,16 @@ struct History {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let home = std::env::var("HOME")?;
     let root_path = PathBuf::from(&home).join("Pictures/Wallpapers");
-    let history_path = PathBuf::from(&home).join(".wallpaper_history.toml");
+
+
+    //XDG compliant location
+    let history_root = PathBuf::from(&home).join(".local/share/Wallpaper_Picker");
+    let history_path = history_root.join("history.toml");
+
+    if !history_root.exists() {
+        fs::create_dir_all(&history_root)?;
+    }
+
     let mut rng = rand::thread_rng();
 
     // 1. Pick a GENRE first
