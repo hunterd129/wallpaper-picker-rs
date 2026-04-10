@@ -13,12 +13,9 @@ struct History {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let home = std::env::var("HOME")?;
-    let root_path = PathBuf::from(&home).join("Pictures/Wallpapers");
-
-
-    //XDG compliant location
-    let history_root = PathBuf::from(&home).join(".local/share/Wallpaper_Picker");
+    let home = dirs::home_dir().ok_or("Could not find home directory")?;
+    let root_path = home.join("Pictures/Wallpapers");
+    let history_root = home.join(".local/share/Wallpaper_Picker");
     let history_path = history_root.join("history.toml");
 
     if !history_root.exists() {
