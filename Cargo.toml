@@ -6,6 +6,8 @@ edition = "2021"
 [dependencies]
 rand = "0.8"
 notify-rust = "4.11"
-#the 'gio' crate handles the GNOME settings database
+dirs = "5.0"
+walkdir = "2.4"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
 gio = "0.19"
-glib = "0.19"

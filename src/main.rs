@@ -1,10 +1,10 @@
-use gio::prelude::*;
 use gio::Settings;
+use gio::prelude::SettingsExt;
 use notify_rust::Notification;
 use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use walkdir::WalkDir;
 
 #[derive(Serialize, Deserialize, Default)]
@@ -67,10 +67,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
 
     // 4. Final Selection
+    if history.previous.len() >= 7 {
+        history.previous.clear();
+    }
+
     let selected_wallpaper = if !fresh_options.is_empty() {
         fresh_options.choose(&mut rng).unwrap().clone()
     } else {
-        history.previous.clear(); // Reset history if this genre is "exhausted"
         entries.choose(&mut rng).unwrap().clone()
     };
 
@@ -79,16 +82,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // 5. Update and Save History
     history.previous.push(wallpaper_path.to_string());
-    if history.previous.len() > 8 {
-        history.previous.remove(0);
-    }
     fs::write(&history_path, toml::to_string(&history)?)?;
 
     // 6. Apply to GNOME
     let settings = Settings::new("org.gnome.desktop.background");
     settings.set_string("picture-uri", &wallpaper_uri)?;
     settings.set_string("picture-uri-dark", &wallpaper_uri)?;
-    settings.apply();
 
     // 7. Notify
     let genre_name = selected_genre.file_name().unwrap_or_default().to_string_lossy();
@@ -98,6 +97,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .summary("Wallpaper Updated")
         .body(&format!("Genre: {}\nFile: {}", genre_name, file_name))
         .appname("Wallpaper Picker")
+        .icon("media-playlist-shuffle")
         .timeout(5000)
         .show()?;
 
