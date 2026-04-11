@@ -1,4 +1,4 @@
-# Install the system headers required by the 'gio' crate
+# Install the needed packages
 pacman -S glib2-devel rust
 
 # Automation
