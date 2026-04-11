@@ -1,9 +1,0 @@
-[Unit]
-Description=Trigger Wallpaper swap
-
-[Service]
-Type=oneshot
-ExecStart=$HOME/.local/bin/Wallpaper_Picker_V2
-
-[Install]
-WantedBy=default.target
