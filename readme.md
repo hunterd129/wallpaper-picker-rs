@@ -1,12 +1,5 @@
 # Install the system headers required by the 'gio' crate
-pacman -S glib2 base-devel
+pacman -S glib2-devel rust
 
-pacman -S rust
-
-# build
-cargo run
-
-# automation
-refer to systemd-wallpaper-swap.service repo
-
-current version is V2.1
+# Automation
+run install.sh
