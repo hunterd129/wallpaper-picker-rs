@@ -3,7 +3,7 @@ Description=Trigger Wallpaper swap
 
 [Service]
 Type=oneshot
-ExecStart=/home/hunter/.local/bin/Wallpaper_Picker_V2
+ExecStart=$HOME/.local/bin/Wallpaper_Picker_V2
 
 [Install]
 WantedBy=default.target

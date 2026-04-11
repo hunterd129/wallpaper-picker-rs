@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Wallpaper_Picker
-Exec=/home/hunter/.local/bin/Wallpaper_Picker_V2
+Exec=$HOME/.local/bin/Wallpaper_Picker
 Icon=media-playlist-shuffle
 StartupWMClass=Wallpaper Picker
 Type=Application
