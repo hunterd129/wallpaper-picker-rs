@@ -32,13 +32,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
 
     if genres.is_empty() {
-        return Err("No genre folders found in ~/Pictures/Wallpapers".into());
+        return Err("No genre dirs found in ~/Pictures/Wallpapers".into());
     }
 
-    let selected_genre = genres.choose(&mut rng).unwrap();
-
-    // 2. Use WalkDir ONLY on the selected genre
-    let entries: Vec<PathBuf> = WalkDir::new(selected_genre)
+    let chosen_genre = genres.choose(&mut rng).unwrap();
+    let entries: Vec<PathBuf> = WalkDir::new(chosen_genre)
         .into_iter()
         .filter_map(|e| e.ok())
         .filter(|e| e.file_type().is_file())
@@ -46,7 +44,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
 
     if entries.is_empty() {
-        return Err("No images found in the selected genre".into());
+        return Err("No images found in the chosen genre".into());
     }
 
     // 3. Load history and filter for "fresh" options in this genre
@@ -66,38 +64,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .cloned()
         .collect();
 
-    // 4. Final Selection
     if history.previous.len() >= 7 {
         history.previous.clear();
     }
 
-    let selected_wallpaper = if !fresh_options.is_empty() {
+    let chosen_image = if !fresh_options.is_empty() {
         fresh_options.choose(&mut rng).unwrap().clone()
     } else {
         entries.choose(&mut rng).unwrap().clone()
     };
 
-    let wallpaper_path = selected_wallpaper.to_str().ok_or("Invalid path")?;
-    let wallpaper_uri = format!("file://{}", wallpaper_path);
+    let image_path = chosen_image.to_str().ok_or("Invalid path")?;
+    let image_uri = format!("file://{}", image_path);
 
     // 5. Update and Save History
-    history.previous.push(wallpaper_path.to_string());
+    history.previous.push(image_path.to_string());
     fs::write(&history_path, toml::to_string(&history)?)?;
 
-    // 6. Apply to GNOME
     let settings = Settings::new("org.gnome.desktop.background");
-    settings.set_string("picture-uri", &wallpaper_uri)?;
-    settings.set_string("picture-uri-dark", &wallpaper_uri)?;
+    settings.set_string("picture-uri", &image_uri)?;
+    settings.set_string("picture-uri-dark", &image_uri)?;
 
-    // 7. Notify
-    let genre_name = selected_genre.file_name().unwrap_or_default().to_string_lossy();
-    let file_name = selected_wallpaper.file_name().unwrap_or_default().to_string_lossy();
+    let genre = chosen_genre.file_name().unwrap_or_default().to_string_lossy();
+    let file = chosen_image.file_name().unwrap_or_default().to_string_lossy();
 
     Notification::new()
         .summary("Wallpaper Updated")
-        .body(&format!("Genre: {}\nFile: {}", genre_name, file_name))
-        .appname("Wallpaper Picker")
+        .body(&format!("Genre: {}\nFile: {}", genre, file))
+        .appname("Wallpaper Shuffler")
         .icon("media-playlist-shuffle")
+        .image_path(&chosen_image.to_string_lossy())
         .timeout(5000)
         .show()?;
 
