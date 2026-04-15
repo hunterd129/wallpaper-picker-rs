@@ -93,7 +93,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .body(&format!("Genre: {}\nFile: {}", genre, file))
         .appname("Wallpaper Shuffler")
         .icon("media-playlist-shuffle")
-        .image_path(&chosen_image.to_string_lossy())
+        .image_path(&chosen_image.to_str().unwrap_or_default())
         .timeout(5000)
         .show()?;
 
