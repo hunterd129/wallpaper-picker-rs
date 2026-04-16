@@ -15,7 +15,7 @@ struct History {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let home = dirs::home_dir().ok_or("Could not find home directory")?;
     let root_path = home.join("Pictures/Wallpapers");
-    let history_root = home.join(".local/share/Wallpaper_Picker");
+    let history_root = home.join(".local/share/Wallpaper_Shuffler");
     let history_path = history_root.join("history.toml");
 
     if !history_root.exists() {
@@ -79,7 +79,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // 5. Update and Save History
     history.previous.push(image_path.to_string());
-    fs::write(&history_path, toml::to_string(&history)?)?;
+    fs::write(&history_path, toml::to_string_pretty(&history)?)?;
 
     let settings = Settings::new("org.gnome.desktop.background");
     settings.set_string("picture-uri", &image_uri)?;
