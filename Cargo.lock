@@ -3,6 +3,19 @@
 version = 4
 
 [[package]]
+name = "Wallpaper_Shuffler"
+version = "0.1.0"
+dependencies = [
+ "dirs",
+ "notify-rust",
+ "rand",
+ "serde",
+ "toml",
+ "walkdir",
+ "windows 0.52.0",
+]
+
+[[package]]
 name = "anyhow"
 version = "1.0.102"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1098,19 +1111,6 @@ checksum = "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b"
 dependencies = [
  "same-file",
  "winapi-util",
-]
-
-[[package]]
-name = "wallpaperpicker"
-version = "0.1.0"
-dependencies = [
- "dirs",
- "notify-rust",
- "rand",
- "serde",
- "toml",
- "walkdir",
- "windows 0.52.0",
 ]
 
 [[package]]
