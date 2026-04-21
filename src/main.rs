@@ -9,7 +9,7 @@ use walkdir::WalkDir;
 use windows::Win32::UI::WindowsAndMessaging::{
     SystemParametersInfoW, SPI_SETDESKWALLPAPER, SPIF_UPDATEINIFILE,
 };
-use notify_rust::Notification;
+use notify_rust::{Notification, Timeout};
 
 #[derive(Serialize, Deserialize, Default)]
 struct History {
@@ -69,10 +69,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     // 6. Update & save history
-    history.recent.push(chosen_image.clone());
-    if history.recent.len() > 8 {
+    if history.recent.len() >= 7 {
         history.recent.remove(0);
     }
+    history.recent.push(chosen_image.clone());
     fs::write(&history_path, toml::to_string_pretty(&history)?)?;
 
     // Set Wallpaper
@@ -99,7 +99,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .body(&format!("Genre: {}\nFile: {}", genre, file))
         .appname("Wallpaper Shuffler")
         .image_path(&chosen_image.to_str().unwrap_or_default())
-        .icon("media-playlist-shuffle")
+        .timeout(Timeout::Milliseconds(5000))
         .show()?;
 
     Ok(())
