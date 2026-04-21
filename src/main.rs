@@ -43,7 +43,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let entries: Vec<PathBuf> = WalkDir::new(chosen_genre)
         .into_iter()
         .filter_map(|e| e.ok())
-        .filter(|e| e.path().is_file()) // Ensure we only pick files
+        .filter(|e| e.path().is_file())
         .map(|e| e.path().to_owned())
         .collect();
 
@@ -68,14 +68,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         entries.choose(&mut rng).unwrap().clone()
     };
 
-    // 6. Update & save history
     if history.recent.len() >= 7 {
         history.recent.remove(0);
     }
     history.recent.push(chosen_image.clone());
     fs::write(&history_path, toml::to_string_pretty(&history)?)?;
 
-    // Set Wallpaper
     let path_wide: Vec<u16> = OsStr::new(chosen_image.as_os_str())
         .encode_wide()
         .chain(std::iter::once(0))
@@ -90,7 +88,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?;
     }
 
-    // 8. Send notification
     let genre = chosen_genre.file_name().unwrap_or_default().to_string_lossy();
     let file = chosen_image.file_name().unwrap_or_default().to_string_lossy();
 
