@@ -1,6 +1,6 @@
 [package]
 name = "Wallpaper_Shuffler"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 
 [dependencies]
@@ -10,4 +10,7 @@ toml = "0.8"
 walkdir = "2.4"
 dirs = "5.0"
 notify-rust = "4.0"
-windows = { version = "0.52", features = ["Win32_UI_WindowsAndMessaging", "Win32_Foundation"] }
+windows = { version = "0.52", features = [
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_Foundation",
+] }
