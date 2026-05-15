@@ -38,9 +38,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Err("No images found in ~/Pictures/Wallpapers".into());
     }
 
-    let chosen_genre = genres.choose(&mut rng).unwrap();
+    let genre = genres.choose(&mut rng).unwrap();
 
-    let entries: Vec<PathBuf> = WalkDir::new(chosen_genre)
+    let entries: Vec<PathBuf> = WalkDir::new(genre)
         .into_iter()
         .filter_map(|e| e.ok())
         .filter(|e| e.path().is_file())
@@ -61,7 +61,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .cloned()
         .collect();
 
-    let chosen_image = if !fresh_options.is_empty() {
+    let wall = if !fresh_options.is_empty() {
         fresh_options.choose(&mut rng).unwrap().clone()
     } else {
         history.recent.clear();
@@ -71,10 +71,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if history.recent.len() >= 7 {
         history.recent.remove(0);
     }
-    history.recent.push(chosen_image.clone());
+    history.recent.push(wall.clone());
     fs::write(&history_path, toml::to_string_pretty(&history)?)?;
 
-    let path_wide: Vec<u16> = OsStr::new(chosen_image.as_os_str())
+    let path_wide: Vec<u16> = OsStr::new(wall.as_os_str())
         .encode_wide()
         .chain(std::iter::once(0))
         .collect();
@@ -88,14 +88,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?;
     }
 
-    let genre = chosen_genre.file_name().unwrap_or_default().to_string_lossy();
-    let file = chosen_image.file_name().unwrap_or_default().to_string_lossy();
+    let genre = genre.file_name().unwrap_or_default().to_string_lossy();
+    let file = wall.file_name().unwrap_or_default().to_string_lossy();
 
     Notification::new()
         .summary("Wallpaper Updated")
         .body(&format!("Genre: {}\nFile: {}", genre, file))
         .appname("Wallpaper Shuffler")
-        .image_path(&chosen_image.to_str().unwrap_or_default())
+        .image_path(&wall.to_str().unwrap_or_default())
         .timeout(Timeout::Milliseconds(5000))
         .show()?;
 
