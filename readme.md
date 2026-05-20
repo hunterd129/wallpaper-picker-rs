@@ -6,6 +6,10 @@ The primary issue I have with how Windows natively handles wallpaper shuffling i
 
 The primary goal of this code is to randomly choose a genre category, then select an image from within that category while also keeping a rolling list of the seven most recent images in order to avoid seeing the same image within the span of a week.
 
+# Files
+The configuration file for weighted selection is found in ~\.config\Wallpaper_Shuffler\config.toml
+History is located in ~\.local\share\Wallpaper_Shuffler\history.toml
+
 - Download the source code, then run `cargo build --release`.
 - In order to automate it, create a basic task with Windows Task Scheduler, tell it to run the .exe, and set the interval to however often you want.
 
