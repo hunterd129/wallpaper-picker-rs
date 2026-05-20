@@ -10,11 +10,12 @@ The primary goal of this code is to randomly choose a genre category, then selec
 - The configuration file for weighted selection is found in ~\.config\Wallpaper_Shuffler\config.toml
 - History is located in ~\.local\share\Wallpaper_Shuffler\history.toml
 
+#Automation
 - Download the source code, then run `cargo build --release`.
 - In order to automate it, create a basic task with Windows Task Scheduler, tell it to run the .exe, and set the interval to however often you want.
 
 # Dependencies
-requires:
+Requires:
 - Rust
 - Visual studio
 
